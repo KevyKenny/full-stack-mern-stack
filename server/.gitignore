@@ -12,4 +12,3 @@ Thumbs.db
 .env
 .env.*
 server/.env
-server/node_modules/
