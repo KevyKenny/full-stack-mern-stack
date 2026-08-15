@@ -1,0 +1,15 @@
+node modules
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.*
+server/.env
+server/node_modules/
