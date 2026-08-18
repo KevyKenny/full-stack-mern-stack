@@ -1,4 +1,22 @@
+<<<<<<< HEAD
 node_modules
 client/node_modules
 server/node_modules
 dist 
+=======
+node modules
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.*
+server/.env
+server/node_modules/
+>>>>>>> 7d64f512adb6ef941b73fe96a029846f60d9a1da

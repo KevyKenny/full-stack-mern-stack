@@ -39,5 +39,43 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route   PUT /api/tasks/:id
+// @desc    Update a task by ID
+router.put('/:id', async (req, res) => {
+    try {
+        const { title, done } = req.body;
+
+        const updatedTask = await Task.findByIdAndUpdate(
+            req.params.id,
+            { title, done },
+            { new: true, runValidators: true } // new:true returns the updated doc
+        );
+
+        if (!updatedTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.status(200).json(updatedTask);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// @route   DELETE /api/tasks/:id
+// @desc    Delete a task by ID
+router.delete('/:id', async (req, res) => {
+    try {
+        const deletedTask = await Task.findByIdAndDelete(req.params.id);
+
+        if (!deletedTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.status(200).json({ message: 'Task deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 export default router;
 
