@@ -1,4 +1,7 @@
-node modules
+node_modules
+client/node_modules
+server/node_modules
+dist 
 # OS
 .DS_Store
 Thumbs.db
