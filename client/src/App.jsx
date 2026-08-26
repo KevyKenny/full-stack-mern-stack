@@ -15,6 +15,7 @@ function App() {
   }
 
   useEffect(() => {
+    document.title = 'Task Manager'
     getTasks()
   }, [])
 

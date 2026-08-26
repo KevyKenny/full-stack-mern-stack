@@ -1,0 +1,139 @@
+.not-found {
+  min-height: 100svh;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Poppins', sans-serif;
+  text-align: left;
+}
+
+.not-found__card {
+  width: min(460px, 100%);
+  overflow: hidden;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+}
+
+.not-found__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 210px;
+  object-fit: contain;
+  background: #f3f4f6;
+}
+
+.not-found__body {
+  padding: 20px 24px 24px;
+}
+
+.not-found h1 {
+  margin: 0 0 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  text-align: left;
+}
+
+.not-found__lead {
+  margin: 0 0 12px;
+  color: #555;
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.not-found__path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 20px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.not-found__path code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f4f3fb;
+  color: #5b4b8a;
+  font-size: 0.88rem;
+}
+
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.not-found__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.not-found__btn:focus-visible {
+  outline: 3px solid #667eea;
+  outline-offset: 3px;
+}
+
+.not-found__btn--primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border: none;
+}
+
+.not-found__btn--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.not-found__btn--secondary {
+  background: #fff;
+  color: #5b4b8a;
+  border: 2px solid #d7d2ee;
+}
+
+.not-found__btn--secondary:hover {
+  background: #f7f5ff;
+}
+
+@media (max-width: 520px) {
+  .not-found__art {
+    max-height: 170px;
+  }
+
+  .not-found__body {
+    padding: 16px 20px 20px;
+  }
+
+  .not-found__btn {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .not-found__btn {
+    transition: none;
+  }
+
+  .not-found__btn--primary:hover {
+    transform: none;
+  }
+}
