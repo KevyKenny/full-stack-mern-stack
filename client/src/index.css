@@ -11,6 +11,18 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
+  /* Form & card theme (Task Manager / Sign up) */
+  --card-bg: #ffffff;
+  --card-text: #333333;
+  --card-text-muted: #555555;
+  --card-label: #444444;
+  --input-bg: #ffffff;
+  --input-text: #1a1a1a;
+  --input-border: #e5e5e5;
+  --input-border-focus: #667eea;
+  --input-placeholder: #9ca3af;
+  --input-focus-ring: rgba(102, 126, 234, 0.15);
+
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
@@ -43,6 +55,17 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+
+    --card-bg: #1e2130;
+    --card-text: #f3f4f6;
+    --card-text-muted: #c4c9d4;
+    --card-label: #d1d5db;
+    --input-bg: #2a2d3a;
+    --input-text: #f3f4f6;
+    --input-border: #3d4154;
+    --input-border-focus: #8b9cf7;
+    --input-placeholder: #9ca3af;
+    --input-focus-ring: rgba(139, 156, 247, 0.25);
   }
 
   #social .button-icon {
@@ -103,4 +126,25 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+input,
+textarea,
+select {
+  color-scheme: light dark;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--input-placeholder);
+  opacity: 1;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset;
+  -webkit-text-fill-color: var(--input-text);
+  caret-color: var(--input-text);
+  transition: background-color 9999s ease-out;
 }

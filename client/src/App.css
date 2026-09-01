@@ -10,40 +10,78 @@
 }
 
 .container {
-  background: #ffffff;
+  background: var(--card-bg);
   padding: 35px;
   border-radius: 20px;
   box-shadow: 0 15px 50px rgba(0,0,0,0.2);
   width: 550px;
   max-width: 95%;
+  color: var(--card-text);
 }
 
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 25px;
-  font-weight: 700;
-}
-
-.input-box {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
+.app-header h1 {
+  margin-bottom: 0;
+  text-align: left;
+  font-size: 1.75rem;
+  color: var(--card-text);
 }
 
 .input-box input {
   flex: 1;
   padding: 12px 16px;
-  border: 2px solid #e5e5e5;
+  border: 2px solid var(--input-border);
   border-radius: 10px;
   font-size: 15px;
   outline: none;
+  background-color: var(--input-bg);
+  color: var(--input-text);
   transition: 0.3s;
 }
 
+.input-box input::placeholder {
+  color: var(--input-placeholder);
+}
+
 .input-box input:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px var(--input-focus-ring);
+}
+
+.task-card {
+  background: var(--input-bg);
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s;
+}
+
+.task-card:hover {
+  transform: translateX(5px);
+  background: var(--card-bg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.task-card.done .task-title {
+  text-decoration: line-through;
+  color: var(--card-text-muted);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-right: 12px;
+  font-size: 13px;
+  color: var(--card-text-muted);
+}
+
+.task-title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--card-text);
 }
 
 .btn-add {
@@ -62,6 +100,35 @@ h1 {
   box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.signup-link {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.signup-link:hover {
+  opacity: 0.9;
+}
+
+.input-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
 .task-list {
   list-style: none;
   padding: 0;
@@ -70,49 +137,14 @@ h1 {
   gap: 12px;
 }
 
-.task-card {
-  background: #f8f9fa;
-  padding: 14px 16px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  border-left: 4px solid #667eea;
-  transition: all 0.3s;
-}
-
-.task-card:hover {
-  transform: translateX(5px);
-  background: #fff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
 .task-card.done {
   border-left-color: #2ecc71;
   opacity: 0.7;
 }
 
-.task-card.done .task-title {
-  text-decoration: line-through;
-  color: #777;
-}
-
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-right: 12px;
-  font-size: 13px;
-}
-
 .radio-group input {
   accent-color: #667eea;
   cursor: pointer;
-}
-
-.task-title {
-  flex: 1;
-  font-size: 16px;
-  font-weight: 500;
 }
 
 .btn-delete {

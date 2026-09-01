@@ -1,7 +1,9 @@
 "use client"
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import './App.css'
+import { getToken } from './utils/authStorage.js'
 
 const API_URL = 'http://localhost:3000/api/tasks'
 
@@ -9,9 +11,14 @@ function App() {
   const [tasks, setTasks] = useState([])
   const [input, setInput] = useState('')
 
+  const authHeaders = () => {
+    const token = getToken()
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+
   const getTasks = async () => {
-    const res = await axios.get(API_URL)
-    setTasks(res.data)
+    const res = await axios.get(API_URL, { headers: authHeaders() })
+    setTasks(res.data.tasks || res.data)
   }
 
   useEffect(() => {
@@ -21,25 +28,28 @@ function App() {
 
   const handleAdd = async () => {
     if (input.trim() === '') return
-    await axios.post(API_URL, { title: input })
+    await axios.post(API_URL, { title: input }, { headers: authHeaders() })
     setInput('')
     getTasks()
   }
 
   const handleDelete = async (id) => {
-    await axios.delete(`${API_URL}/${id}`)
+    await axios.delete(`${API_URL}/${id}`, { headers: authHeaders() })
     getTasks()
   }
 
   const handleStatusChange = async (id, done) => {
-    await axios.put(`${API_URL}/${id}`, { done })
+    await axios.put(`${API_URL}/${id}`, { done }, { headers: authHeaders() })
     getTasks()
   }
 
   return (
     <div className="app-wrapper">
       <div className="container">
-        <h1>Task Manager</h1>
+        <div className="app-header">
+          <h1>Task Manager</h1>
+          <Link className="signup-link" to="/signup">Sign up</Link>
+        </div>
 
         <div className="input-box">
           <input
