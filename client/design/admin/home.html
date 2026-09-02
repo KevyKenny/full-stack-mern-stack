@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --success: #2ecc71;
+    --danger: #ff4d4f;
+    --text-dark: #333;
+    --text-muted: #555;
+    --input-border: #e5e5e5;
+    --focus-ring: rgba(102, 126, 234, 0.15);
+    --card-bg: #ffffff;
+    --task-bg: #f8f9fa;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --card-bg: #1e2130;
+      --input-bg: #2a2d3a;
+      --text-dark: #f3f4f6;
+      --text-muted: #c5c8d3;
+      --input-border: #3d4154;
+      --focus-ring: rgba(139, 156, 247, 0.25);
+      --task-bg: #2a2d3a;
+      --nav-bg: rgba(30, 33, 48, 0.95);
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Navbar ---------- */
+  .navbar {
+    background: var(--nav-bg);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+  }
+  .brand {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--primary);
+  }
+  .nav-links {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+  }
+  .nav-links a {
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-muted);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-links a:hover { background: var(--focus-ring); color: var(--primary); }
+  .nav-links a.active {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+  }
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--primary);
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+  .hamburger:focus-visible, .nav-links a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      padding: 8px 24px 16px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: block; min-height: 44px; display: flex; align-items: center; }
+    .nav-inner { flex-wrap: wrap; }
+    .hamburger { display: block; }
+  }
+
+  /* ---------- Layout ---------- */
+  main {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+  }
+  .card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    padding: 32px;
+  }
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+
+  /* ---------- Add task row ---------- */
+  .add-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .add-row label { position: absolute; left: -9999px; }
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--input-border);
+    background: var(--input-bg, #fff);
+    color: var(--text-dark);
+    font-family: inherit;
+    font-size: 15px;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+  .btn {
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 12px 20px;
+    transition: transform 0.1s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 18px rgba(102, 126, 234, 0.45); }
+
+  /* ---------- Task list ---------- */
+  .task-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .task-card {
+    background: var(--task-bg);
+    border-left: 4px solid var(--primary);
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .task-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+  .task-card.done { border-left-color: var(--success); }
+  .task-toggle {
+    width: 22px; height: 22px; flex-shrink: 0;
+    accent-color: var(--success);
+    cursor: pointer;
+  }
+  .task-title { flex: 1; font-size: 15px; font-weight: 600; }
+  .task-card.done .task-title { text-decoration: line-through; color: var(--text-muted); }
+  .task-due { font-size: 12px; color: var(--text-muted); display: block; font-weight: 400; margin-top: 2px; }
+  .task-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    background: transparent;
+  }
+  .icon-btn.edit { color: var(--primary); background: rgba(102,126,234,0.1); }
+  .icon-btn.edit:hover { background: rgba(102,126,234,0.18); }
+  .icon-btn.delete { color: var(--danger); background: rgba(255,77,79,0.1); }
+  .icon-btn.delete:hover { background: rgba(255,77,79,0.18); }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+    display: none;
+  }
+
+  .avatar-bar { display: flex; align-items: center; gap: 10px; justify-content: flex-end; margin-bottom: 20px; flex-wrap: wrap; }
+  .demo-role-badge {
+    font-size: 12px; font-weight: 600; color: var(--secondary);
+    background: rgba(118,75,162,0.12); padding: 6px 12px; border-radius: 20px;
+    margin-right: auto;
+  }
+  .demo-role-badge a { color: var(--secondary); text-decoration: underline; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  .avatar-name { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+
+  @media (max-width: 480px) {
+    .add-row { flex-direction: column; }
+    .task-card { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="brand">Task Manager</div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="sign-up.html">Sign up</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <div class="avatar-bar">
+      <span class="demo-role-badge">Viewing as: Admin — <a href="admin-tasks.html">Admin Tasks</a> · <a href="admin-employees.html">Employees</a></span>
+      <span class="avatar-name">Jordan Diaz</span>
+      <div class="avatar">JD</div>
+    </div>
+    <h1>Task Manager</h1>
+
+    <form class="add-row" onsubmit="return false;">
+      <label for="newTask">New task</label>
+      <input type="text" id="newTask" name="newTask" placeholder="e.g. Read chapter 4 of Bio textbook">
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+
+    <ul class="task-list">
+      <li class="task-card">
+        <input type="checkbox" class="task-toggle" aria-label="Mark 'Finish React homework' as done">
+        <span class="task-title">Finish React homework
+          <span class="task-due">Due tomorrow</span>
+        </span>
+        <div class="task-actions">
+          <a class="icon-btn edit" href="edit.html">Edit</a>
+          <button class="icon-btn delete" type="button">Delete</button>
+        </div>
+      </li>
+      <li class="task-card">
+        <input type="checkbox" class="task-toggle" aria-label="Mark 'Study for Calculus midterm' as done">
+        <span class="task-title">Study for Calculus midterm
+          <span class="task-due">Due Friday</span>
+        </span>
+        <div class="task-actions">
+          <a class="icon-btn edit" href="edit.html">Edit</a>
+          <button class="icon-btn delete" type="button">Delete</button>
+        </div>
+      </li>
+      <li class="task-card done">
+        <input type="checkbox" class="task-toggle" checked aria-label="Mark 'Submit lab report' as not done">
+        <span class="task-title">Submit lab report
+          <span class="task-due">Completed Monday</span>
+        </span>
+        <div class="task-actions">
+          <a class="icon-btn edit" href="edit.html">Edit</a>
+          <button class="icon-btn delete" type="button">Delete</button>
+        </div>
+      </li>
+      <li class="task-card">
+        <input type="checkbox" class="task-toggle" aria-label="Mark 'Group project outline' as done">
+        <span class="task-title">Group project outline
+          <span class="task-due">Due next week</span>
+        </span>
+        <div class="task-actions">
+          <a class="icon-btn edit" href="edit.html">Edit</a>
+          <button class="icon-btn delete" type="button">Delete</button>
+        </div>
+      </li>
+    </ul>
+
+    <p class="empty-state">No tasks yet — add one above to get started.</p>
+  </div>
+</main>
+
+<script>
+  const btn = document.getElementById('hamburgerBtn');
+  const links = document.getElementById('navLinks');
+  btn.addEventListener('click', () => {
+    const isOpen = links.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+  });
+  links.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      links.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+</body>
+</html>

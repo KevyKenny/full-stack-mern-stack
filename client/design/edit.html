@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Task | Task Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --success: #2ecc71;
+    --danger: #ff4d4f;
+    --text-dark: #333;
+    --text-muted: #555;
+    --input-border: #e5e5e5;
+    --focus-ring: rgba(102, 126, 234, 0.15);
+    --card-bg: #ffffff;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --card-bg: #1e2130;
+      --input-bg: #2a2d3a;
+      --text-dark: #f3f4f6;
+      --text-muted: #c5c8d3;
+      --input-border: #3d4154;
+      --focus-ring: rgba(139, 156, 247, 0.25);
+      --nav-bg: rgba(30, 33, 48, 0.95);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+  }
+  a { color: inherit; text-decoration: none; }
+  .navbar {
+    background: var(--nav-bg); backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  }
+  .nav-inner {
+    max-width: 960px; margin: 0 auto; display: flex; align-items: center;
+    justify-content: space-between; padding: 16px 24px;
+  }
+  .brand { font-weight: 700; font-size: 20px; color: var(--primary); }
+  .nav-links { display: flex; gap: 8px; list-style: none; }
+  .nav-links a {
+    padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 15px;
+    color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-links a:hover { background: var(--focus-ring); color: var(--primary); }
+  .nav-links a.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+  .hamburger {
+    display: none; background: none; border: none; font-size: 28px; line-height: 1;
+    cursor: pointer; color: var(--primary); padding: 4px 8px; border-radius: 8px;
+  }
+  .hamburger:focus-visible, .nav-links a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, a.btn-secondary:focus-visible {
+    outline: 3px solid var(--primary); outline-offset: 2px;
+  }
+  @media (max-width: 768px) {
+    .nav-links { display: none; flex-direction: column; width: 100%; padding: 8px 24px 16px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: flex; align-items: center; min-height: 44px; }
+    .nav-inner { flex-wrap: wrap; }
+    .hamburger { display: block; }
+  }
+  main { max-width: 560px; margin: 40px auto; padding: 0 20px 60px; }
+  .card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); padding: 36px; }
+  .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 4px; }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 24px; }
+  .field { margin-bottom: 20px; }
+  .field label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  input[type="text"] {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--input-border);
+    background: var(--input-bg, #fff); color: var(--text-dark); font-family: inherit; font-size: 15px;
+  }
+  input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--focus-ring); }
+  fieldset { border: none; padding: 0; }
+  legend { font-size: 14px; font-weight: 600; margin-bottom: 10px; padding: 0; }
+  .radio-group { display: flex; gap: 16px; }
+  .radio-option {
+    display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 10px;
+    border: 1.5px solid var(--input-border); cursor: pointer; font-size: 14px; flex: 1;
+  }
+  .radio-option input { accent-color: var(--primary); width: 18px; height: 18px; }
+  .actions { display: flex; gap: 12px; margin-top: 28px; }
+  .btn {
+    border: none; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 15px;
+    cursor: pointer; padding: 12px 22px; transition: transform 0.1s ease, box-shadow 0.15s ease; flex: 1;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff; box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+  }
+  .btn-secondary {
+    background: transparent; color: var(--primary); border: 1.5px solid var(--primary);
+    text-align: center; display: flex; align-items: center; justify-content: center;
+  }
+  @media (max-width: 480px) { .actions { flex-direction: column-reverse; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="brand">Task Manager</div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="sign-up.html">Sign up</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <p class="subtitle">Update your task details</p>
+    <h1>Edit task</h1>
+
+    <form onsubmit="return false;">
+      <div class="field">
+        <label for="taskTitle">Task title</label>
+        <input type="text" id="taskTitle" name="taskTitle" value="Finish React homework">
+      </div>
+
+      <fieldset class="field">
+        <legend>Status</legend>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="status" value="pending" checked>
+            Pending
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="status" value="done">
+            Done
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <a class="btn btn-secondary" href="home.html">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  const btn = document.getElementById('hamburgerBtn');
+  const links = document.getElementById('navLinks');
+  btn.addEventListener('click', () => {
+    const isOpen = links.classList.toggle('open');
+    btn.setAttribute('aria-expanded', isOpen);
+  });
+  links.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      links.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+</body>
+</html>

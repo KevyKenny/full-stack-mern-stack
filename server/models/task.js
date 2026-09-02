@@ -1,31 +1,32 @@
-import mongoose from 'mongoose';
-import express from 'express';
-// import task from './route/taskRoutes'; // import routes
+import mongoose from 'mongoose'
 
 const taskSchema = new mongoose.Schema(
-    {
-
-       title: { type: String, required: true},
-       done: { type: Boolean, default: false }, 
+  {
+    title: {
+      type: String,
+      required: [true, 'Title is required'],
+      trim: true,
+      maxlength: [200, 'Title cannot exceed 200 characters'],
     },
-    {timestamps: true}
-);
+    done: {
+      type: Boolean,
+      default: false,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Task must belong to a user'],
+    },
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  },
+  { timestamps: true }
+)
 
-export default mongoose.model('Task', taskSchema);
+taskSchema.index({ createdBy: 1 })
+taskSchema.index({ assignedTo: 1 })
+taskSchema.index({ done: 1 })
 
-// const app = express();
-
-// app.use(express.json()); // to read JSON from request body
-
-// // Connect to MongoDB
-// mongoose.connect('your_mongodb_url_here')
-//   .then(() => console.log('MongoDB Connected'))
-//   .catch(err => console.log(err));
-
-// // Use the task routes
-// app.use('/api/tasks', taskRoutes);
-
-// app.listen(3000, () => {
-//   console.log('Server is running on port 3000');
-// });
-
+export default mongoose.model('Task', taskSchema)

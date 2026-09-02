@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employees | Task Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --success: #2ecc71;
+    --danger: #ff4d4f;
+    --muted-pill: #8a93a6;
+    --text-dark: #333;
+    --text-muted: #555;
+    --input-border: #e5e5e5;
+    --focus-ring: rgba(102, 126, 234, 0.15);
+    --card-bg: #ffffff;
+    --task-bg: #f8f9fa;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --card-bg: #1e2130;
+      --input-bg: #2a2d3a;
+      --text-dark: #f3f4f6;
+      --text-muted: #c5c8d3;
+      --input-border: #3d4154;
+      --focus-ring: rgba(139, 156, 247, 0.25);
+      --task-bg: #2a2d3a;
+      --nav-bg: rgba(30, 33, 48, 0.95);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .navbar { background: var(--nav-bg); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+  .nav-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
+  .brand { font-weight: 700; font-size: 20px; color: var(--primary); }
+  .nav-links { display: flex; gap: 6px; list-style: none; flex-wrap: wrap; }
+  .nav-links a { padding: 8px 14px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease; }
+  .nav-links a:hover { background: var(--focus-ring); color: var(--primary); }
+  .nav-links a.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+  .hamburger { display: none; background: none; border: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--primary); padding: 4px 8px; border-radius: 8px; }
+  .hamburger:focus-visible, .nav-links a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--primary); outline-offset: 2px;
+  }
+  @media (max-width: 900px) {
+    .nav-links { display: none; flex-direction: column; width: 100%; padding: 8px 24px 16px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: flex; align-items: center; min-height: 44px; }
+    .nav-inner { flex-wrap: wrap; }
+    .hamburger { display: block; }
+  }
+
+  main { max-width: 960px; margin: 40px auto; padding: 0 20px 60px; }
+  .card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); padding: 32px; }
+
+  .admin-badge {
+    display: inline-block; font-size: 12px; font-weight: 700; color: var(--secondary);
+    background: rgba(118,75,162,0.12); padding: 6px 12px; border-radius: 20px; margin-bottom: 14px;
+  }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .lead { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+  .card-header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter-bar input[type="text"], .filter-bar select {
+    padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--input-border);
+    background: var(--input-bg, #fff); color: var(--text-dark); font-family: inherit; font-size: 14px;
+  }
+  .filter-bar input[type="text"] { flex: 1; min-width: 200px; }
+  .filter-bar select { min-width: 150px; }
+  input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+  .btn { border: none; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 14px; cursor: pointer; padding: 10px 18px; transition: transform 0.1s ease, box-shadow 0.15s ease; white-space: nowrap; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35); }
+  .btn-secondary { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-muted); padding: 10px 12px; border-bottom: 2px solid var(--input-border); }
+  tbody td { padding: 14px 12px; border-bottom: 1px solid var(--input-border); font-size: 14px; vertical-align: middle; }
+  tbody tr:hover { background: var(--task-bg); }
+
+  .person { display: flex; align-items: center; gap: 10px; }
+  .mini-avatar {
+    width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px;
+  }
+  .person-name { font-weight: 600; }
+  .person-email { font-size: 12px; color: var(--text-muted); }
+
+  .pill { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .pill.role-admin { background: rgba(118,75,162,0.14); color: var(--secondary); }
+  .pill.role-employee { background: rgba(102,126,234,0.12); color: var(--primary); }
+  .pill.status-active { background: rgba(46,204,113,0.12); color: var(--success); }
+  .pill.status-inactive { background: rgba(138,147,166,0.16); color: var(--muted-pill); }
+
+  .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .icon-btn { border: none; border-radius: 8px; padding: 7px 12px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .icon-btn.edit { color: var(--primary); background: rgba(102,126,234,0.1); }
+  .icon-btn.edit:hover { background: rgba(102,126,234,0.18); }
+  .icon-btn.role { color: var(--secondary); background: rgba(118,75,162,0.1); }
+  .icon-btn.role:hover { background: rgba(118,75,162,0.18); }
+  .icon-btn.deactivate { color: var(--danger); background: rgba(255,77,79,0.1); }
+  .icon-btn.deactivate:hover { background: rgba(255,77,79,0.18); }
+  .icon-btn.activate { color: var(--success); background: rgba(46,204,113,0.1); }
+  .icon-btn.activate:hover { background: rgba(46,204,113,0.18); }
+  .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .back-link { display: inline-block; font-size: 14px; color: var(--primary); font-weight: 600; margin-top: 24px; }
+  .back-link:hover { text-decoration: underline; }
+
+  /* Add employee panel */
+  .panel {
+    display: none;
+    background: var(--task-bg);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .panel.open { display: block; }
+  .panel h2 { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+  .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .field input[type="text"], .field input[type="email"], .field input[type="password"], .field select {
+    width: 100%; padding: 11px 12px; border-radius: 10px; border: 1.5px solid var(--input-border);
+    background: var(--card-bg); color: var(--text-dark); font-family: inherit; font-size: 14px;
+  }
+  .panel-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+  @media (max-width: 720px) {
+    .panel-grid { grid-template-columns: 1fr; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr { background: var(--task-bg); border-radius: 12px; padding: 14px; margin-bottom: 12px; border: none; }
+    tbody td { border: none; padding: 6px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    tbody td::before { content: attr(data-label); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .row-actions { justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="brand">Task Manager</div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="admin-tasks.html">Admin Tasks</a></li>
+      <li><a href="admin-employees.html" class="active">Employees</a></li>
+      <li><a href="sign-up.html">Sign up</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <span class="admin-badge">Admin dashboard</span>
+        <h1>Manage employees</h1>
+        <p class="lead">Create, update, and manage employee accounts.</p>
+      </div>
+      <button class="btn btn-primary" type="button" id="togglePanelBtn">+ Add employee</button>
+    </div>
+
+    <section class="panel" id="addPanel">
+      <h2>Add employee</h2>
+      <form onsubmit="return false;">
+        <div class="panel-grid">
+          <div class="field">
+            <label for="newFirstName">First name</label>
+            <input type="text" id="newFirstName">
+          </div>
+          <div class="field">
+            <label for="newLastName">Last name</label>
+            <input type="text" id="newLastName">
+          </div>
+          <div class="field">
+            <label for="newEmail">Email</label>
+            <input type="email" id="newEmail">
+          </div>
+          <div class="field">
+            <label for="newPassword">Password</label>
+            <input type="password" id="newPassword">
+          </div>
+          <div class="field">
+            <label for="newDept">Department</label>
+            <input type="text" id="newDept">
+          </div>
+          <div class="field">
+            <label for="newJobTitle">Job title</label>
+            <input type="text" id="newJobTitle">
+          </div>
+          <div class="field">
+            <label for="newRole">Role</label>
+            <select id="newRole">
+              <option value="employee">Employee</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-actions">
+          <button type="submit" class="btn btn-primary">Create employee</button>
+          <button type="button" class="btn btn-secondary" id="cancelPanelBtn">Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <div class="filter-bar">
+      <label for="searchEmployees" style="position:absolute; left:-9999px;">Search employees</label>
+      <input type="text" id="searchEmployees" placeholder="Search by name or email…">
+      <label for="roleFilter" style="position:absolute; left:-9999px;">Filter by role</label>
+      <select id="roleFilter">
+        <option>All roles</option>
+        <option>Employee</option>
+        <option>Admin</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Employee">
+              <span class="person">
+                <span class="mini-avatar">JD</span>
+                <span>
+                  <span class="person-name" style="display:block;">Jane Doe</span>
+                  <span class="person-email">jane.doe@taskmanager.io</span>
+                </span>
+              </span>
+            </td>
+            <td data-label="Department">Engineering</td>
+            <td data-label="Role"><span class="pill role-employee">Employee</span></td>
+            <td data-label="Status"><span class="pill status-active">Active</span></td>
+            <td data-label="Actions">
+              <div class="row-actions">
+                <button class="icon-btn edit" type="button">Edit</button>
+                <button class="icon-btn role" type="button">Change role</button>
+                <button class="icon-btn deactivate" type="button">Deactivate</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Employee">
+              <span class="person">
+                <span class="mini-avatar">MS</span>
+                <span>
+                  <span class="person-name" style="display:block;">Mike Smith</span>
+                  <span class="person-email">mike.smith@taskmanager.io</span>
+                </span>
+              </span>
+            </td>
+            <td data-label="Department">Sales</td>
+            <td data-label="Role"><span class="pill role-employee">Employee</span></td>
+            <td data-label="Status"><span class="pill status-active">Active</span></td>
+            <td data-label="Actions">
+              <div class="row-actions">
+                <button class="icon-btn edit" type="button">Edit</button>
+                <button class="icon-btn role" type="button">Change role</button>
+                <button class="icon-btn deactivate" type="button">Deactivate</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Employee">
+              <span class="person">
+                <span class="mini-avatar">PP</span>
+                <span>
+                  <span class="person-name" style="display:block;">Priya Patel</span>
+                  <span class="person-email">priya.patel@taskmanager.io</span>
+                </span>
+              </span>
+            </td>
+            <td data-label="Department">Marketing</td>
+            <td data-label="Role"><span class="pill role-employee">Employee</span></td>
+            <td data-label="Status"><span class="pill status-inactive">Inactive</span></td>
+            <td data-label="Actions">
+              <div class="row-actions">
+                <button class="icon-btn edit" type="button">Edit</button>
+                <button class="icon-btn role" type="button">Change role</button>
+                <button class="icon-btn activate" type="button">Activate</button>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td data-label="Employee">
+              <span class="person">
+                <span class="mini-avatar">SA</span>
+                <span>
+                  <span class="person-name" style="display:block;">System Admin</span>
+                  <span class="person-email">admin@taskmanager.io</span>
+                </span>
+              </span>
+            </td>
+            <td data-label="Department">Management</td>
+            <td data-label="Role"><span class="pill role-admin">Admin</span></td>
+            <td data-label="Status"><span class="pill status-active">Active</span></td>
+            <td data-label="Actions">
+              <div class="row-actions">
+                <button class="icon-btn edit" type="button">Edit</button>
+                <button class="icon-btn deactivate" type="button" disabled title="You can't deactivate your own account">Deactivate</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <a class="back-link" href="home.html">← Back to Home</a>
+  </div>
+</main>
+
+<script>
+  const hb = document.getElementById('hamburgerBtn');
+  const links = document.getElementById('navLinks');
+  hb.addEventListener('click', () => {
+    const isOpen = links.classList.toggle('open');
+    hb.setAttribute('aria-expanded', isOpen);
+  });
+  links.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      links.classList.remove('open');
+      hb.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  const panel = document.getElementById('addPanel');
+  document.getElementById('togglePanelBtn').addEventListener('click', () => panel.classList.add('open'));
+  document.getElementById('cancelPanelBtn').addEventListener('click', () => panel.classList.remove('open'));
+</script>
+</body>
+</html>

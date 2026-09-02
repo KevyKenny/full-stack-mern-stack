@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Tasks | Task Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #667eea;
+    --secondary: #764ba2;
+    --success: #2ecc71;
+    --danger: #ff4d4f;
+    --text-dark: #333;
+    --text-muted: #555;
+    --input-border: #e5e5e5;
+    --focus-ring: rgba(102, 126, 234, 0.15);
+    --card-bg: #ffffff;
+    --task-bg: #f8f9fa;
+    --nav-bg: rgba(255, 255, 255, 0.95);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --card-bg: #1e2130;
+      --input-bg: #2a2d3a;
+      --text-dark: #f3f4f6;
+      --text-muted: #c5c8d3;
+      --input-border: #3d4154;
+      --focus-ring: rgba(139, 156, 247, 0.25);
+      --task-bg: #2a2d3a;
+      --nav-bg: rgba(30, 33, 48, 0.95);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* Navbar */
+  .navbar { background: var(--nav-bg); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+  .nav-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
+  .brand { font-weight: 700; font-size: 20px; color: var(--primary); }
+  .nav-links { display: flex; gap: 6px; list-style: none; flex-wrap: wrap; }
+  .nav-links a { padding: 8px 14px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--text-muted); transition: background 0.15s ease, color 0.15s ease; }
+  .nav-links a:hover { background: var(--focus-ring); color: var(--primary); }
+  .nav-links a.active { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; }
+  .hamburger { display: none; background: none; border: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--primary); padding: 4px 8px; border-radius: 8px; }
+  .hamburger:focus-visible, .nav-links a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid var(--primary); outline-offset: 2px;
+  }
+  @media (max-width: 900px) {
+    .nav-links { display: none; flex-direction: column; width: 100%; padding: 8px 24px 16px; }
+    .nav-links.open { display: flex; }
+    .nav-links a { display: flex; align-items: center; min-height: 44px; }
+    .nav-inner { flex-wrap: wrap; }
+    .hamburger { display: block; }
+  }
+
+  main { max-width: 960px; margin: 40px auto; padding: 0 20px 60px; }
+  .card { background: var(--card-bg); border-radius: 20px; box-shadow: 0 15px 50px rgba(0,0,0,0.2); padding: 32px; }
+
+  .admin-badge {
+    display: inline-block; font-size: 12px; font-weight: 700; color: var(--secondary);
+    background: rgba(118,75,162,0.12); padding: 6px 12px; border-radius: 20px; margin-bottom: 14px;
+  }
+  h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+  .lead { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+  .stat-card { background: var(--task-bg); border-radius: 14px; padding: 18px; }
+  .stat-value { font-size: 26px; font-weight: 700; }
+  .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .stat-card.pending .stat-value { color: var(--primary); }
+  .stat-card.done .stat-value { color: var(--success); }
+
+  /* Filter bar */
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter-bar input[type="text"], .filter-bar select {
+    padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--input-border);
+    background: var(--input-bg, #fff); color: var(--text-dark); font-family: inherit; font-size: 14px;
+  }
+  .filter-bar input[type="text"] { flex: 1; min-width: 180px; }
+  .filter-bar select { min-width: 150px; }
+  input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--focus-ring); }
+
+  .btn { border: none; border-radius: 10px; font-weight: 600; font-family: inherit; font-size: 14px; cursor: pointer; padding: 10px 18px; transition: transform 0.1s ease, box-shadow 0.15s ease; white-space: nowrap; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em;
+    color: var(--text-muted); padding: 10px 12px; border-bottom: 2px solid var(--input-border);
+  }
+  tbody td { padding: 14px 12px; border-bottom: 1px solid var(--input-border); font-size: 14px; vertical-align: middle; }
+  tbody tr:hover { background: var(--task-bg); }
+
+  .person { display: flex; align-items: center; gap: 8px; }
+  .mini-avatar {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px;
+  }
+
+  .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge.pending { background: rgba(102,126,234,0.12); color: var(--primary); }
+  .badge.done { background: rgba(46,204,113,0.12); color: var(--success); }
+
+  .row-actions { display: flex; gap: 8px; }
+  .icon-btn { border: none; border-radius: 8px; padding: 7px 12px; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .icon-btn.edit { color: var(--primary); background: rgba(102,126,234,0.1); }
+  .icon-btn.edit:hover { background: rgba(102,126,234,0.18); }
+  .icon-btn.delete { color: var(--danger); background: rgba(255,77,79,0.1); }
+  .icon-btn.delete:hover { background: rgba(255,77,79,0.18); }
+
+  .card-header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  .back-link { display: inline-block; font-size: 14px; color: var(--primary); font-weight: 600; margin-top: 24px; }
+  .back-link:hover { text-decoration: underline; }
+
+  /* Mobile: cards instead of table */
+  @media (max-width: 720px) {
+    .stats-row { grid-template-columns: 1fr; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr {
+      background: var(--task-bg); border-radius: 12px; padding: 14px; margin-bottom: 12px; border: none;
+    }
+    tbody td { border: none; padding: 6px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    tbody td::before { content: attr(data-label); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .row-actions { justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="brand">Task Manager</div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="admin-tasks.html" class="active">Admin Tasks</a></li>
+      <li><a href="admin-employees.html">Employees</a></li>
+      <li><a href="sign-up.html">Sign up</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <div class="card">
+    <div class="card-header-row">
+      <div>
+        <span class="admin-badge">Admin dashboard</span>
+        <h1>All tasks</h1>
+        <p class="lead">View and manage tasks from every employee.</p>
+      </div>
+      <button class="btn btn-primary" type="button">+ Add task</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-value">18</div>
+        <div class="stat-label">Total tasks</div>
+      </div>
+      <div class="stat-card pending">
+        <div class="stat-value">11</div>
+        <div class="stat-label">Pending</div>
+      </div>
+      <div class="stat-card done">
+        <div class="stat-value">7</div>
+        <div class="stat-label">Completed</div>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <label for="searchTasks" style="position:absolute; left:-9999px;">Search tasks</label>
+      <input type="text" id="searchTasks" placeholder="Search tasks…">
+      <label for="statusFilter" style="position:absolute; left:-9999px;">Filter by status</label>
+      <select id="statusFilter">
+        <option>All statuses</option>
+        <option>Pending</option>
+        <option>Done</option>
+      </select>
+      <label for="assigneeFilter" style="position:absolute; left:-9999px;">Filter by assignee</label>
+      <select id="assigneeFilter">
+        <option>All employees</option>
+        <option>Jane Doe</option>
+        <option>Mike Smith</option>
+        <option>Priya Patel</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Status</th>
+            <th>Assigned to</th>
+            <th>Created by</th>
+            <th>Date created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Task">Finish React homework</td>
+            <td data-label="Status"><span class="badge pending">Pending</span></td>
+            <td data-label="Assigned to"><span class="person"><span class="mini-avatar">JD</span>Jane Doe</span></td>
+            <td data-label="Created by">Jane Doe</td>
+            <td data-label="Date created">Aug 28, 2026</td>
+            <td data-label="Actions"><div class="row-actions"><button class="icon-btn edit" type="button">Edit</button><button class="icon-btn delete" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Task">Prepare onboarding slides</td>
+            <td data-label="Status"><span class="badge pending">Pending</span></td>
+            <td data-label="Assigned to"><span class="person"><span class="mini-avatar">MS</span>Mike Smith</span></td>
+            <td data-label="Created by">System Admin</td>
+            <td data-label="Date created">Aug 27, 2026</td>
+            <td data-label="Actions"><div class="row-actions"><button class="icon-btn edit" type="button">Edit</button><button class="icon-btn delete" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Task">Submit lab report</td>
+            <td data-label="Status"><span class="badge done">Done</span></td>
+            <td data-label="Assigned to"><span class="person"><span class="mini-avatar">PP</span>Priya Patel</span></td>
+            <td data-label="Created by">Priya Patel</td>
+            <td data-label="Date created">Aug 25, 2026</td>
+            <td data-label="Actions"><div class="row-actions"><button class="icon-btn edit" type="button">Edit</button><button class="icon-btn delete" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Task">Review Q3 budget sheet</td>
+            <td data-label="Status"><span class="badge pending">Pending</span></td>
+            <td data-label="Assigned to"><span class="person"><span class="mini-avatar">SA</span>System Admin</span></td>
+            <td data-label="Created by">System Admin</td>
+            <td data-label="Date created">Aug 24, 2026</td>
+            <td data-label="Actions"><div class="row-actions"><button class="icon-btn edit" type="button">Edit</button><button class="icon-btn delete" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Task">Group project outline</td>
+            <td data-label="Status"><span class="badge done">Done</span></td>
+            <td data-label="Assigned to"><span class="person"><span class="mini-avatar">JD</span>Jane Doe</span></td>
+            <td data-label="Created by">Mike Smith</td>
+            <td data-label="Date created">Aug 20, 2026</td>
+            <td data-label="Actions"><div class="row-actions"><button class="icon-btn edit" type="button">Edit</button><button class="icon-btn delete" type="button">Delete</button></div></td>
+          </tr>
+          <tr>
+            <td data-label="Task">Study for Calculus midterm</td>
+            <td data-label="Status"><span class="badge pending">Pending</span></td>
+            <td data-label="Assigned to"><span class="person"><span class="mini-avatar">MS</span>Mike Smith</span></td>
+            <td data-label="Created by">Mike Smith</td>
+            <td data-label="Date created">Aug 18, 2026</td>
+            <td data-label="Actions"><div class="row-actions"><button class="icon-btn edit" type="button">Edit</button><button class="icon-btn delete" type="button">Delete</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <a class="back-link" href="home.html">← Back to Home</a>
+  </div>
+</main>
+
+<script>
+  const hb = document.getElementById('hamburgerBtn');
+  const links = document.getElementById('navLinks');
+  hb.addEventListener('click', () => {
+    const isOpen = links.classList.toggle('open');
+    hb.setAttribute('aria-expanded', isOpen);
+  });
+  links.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      links.classList.remove('open');
+      hb.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+</body>
+</html>
