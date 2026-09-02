@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "node server.js",
-    "seed:admin": "node scripts/seedAdmin.js"
+    "seed:admin": "node scripts/seedAdmin.js",
+    "reset:passwords": "node scripts/resetPasswords.js"
   },
   "keywords": [],
   "author": "",

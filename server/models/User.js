@@ -93,15 +93,14 @@ userSchema.virtual('fullName').get(function fullName() {
   return `${this.firstName} ${this.lastName}`
 })
 
-userSchema.pre('save', async function hashPassword(next) {
+userSchema.pre('save', async function hashPassword() {
   if (!this.isModified('password')) {
-    // return next()
+    return
   }
 
   const salt = await bcrypt.genSalt(12)
   this.password = await bcrypt.hash(this.password, salt)
   this.passwordChangedAt = new Date()
-  // next()
 })
 
 userSchema.methods.matchPassword = async function matchPassword(enteredPassword) {

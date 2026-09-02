@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import Navbar from '../components/Navbar.jsx'
 import { AUTH_URL } from '../config/api.js'
 import { saveAuth } from '../utils/authStorage.js'
 import { getInitials } from '../utils/getInitials.js'
@@ -57,7 +58,7 @@ function SignUp() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     const validationError = validateForm()
     if (validationError) {
@@ -97,8 +98,10 @@ function SignUp() {
     const initials = getInitials(successUser.firstName, successUser.lastName)
 
     return (
-      <div className="auth-wrapper">
-        <div className="auth-card auth-card--success">
+      <div className="auth-page">
+        <Navbar />
+        <div className="auth-wrapper">
+          <div className="auth-card auth-card--success">
           <div className="avatar" aria-hidden="true">
             {initials}
           </div>
@@ -117,12 +120,15 @@ function SignUp() {
             Go to Task Manager
           </button>
         </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="auth-wrapper">
+    <div className="auth-page">
+      <Navbar />
+      <div className="auth-wrapper">
       <div className="auth-card">
         <p className="auth-eyebrow">Task Manager</p>
         <h1>Create your account</h1>
@@ -259,9 +265,10 @@ function SignUp() {
         </form>
 
         <p className="auth-footer">
-          Already signed up?{' '}
-          <Link to="/">Go to Task Manager</Link>
+          Already have an account?{' '}
+          <Link to="/login">Log in</Link>
         </p>
+      </div>
       </div>
     </div>
   )

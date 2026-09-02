@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import Navbar from '../components/Navbar.jsx'
 import './NotFound.css'
 
 function NotFound() {
@@ -23,7 +24,10 @@ function NotFound() {
   }
 
   return (
-    <main className="not-found" aria-labelledby="not-found-title">
+    <div className="not-found-page">
+      <Navbar />
+
+      <main className="not-found" aria-labelledby="not-found-title">
       <div className="not-found__card">
         <img
           className="not-found__art"
@@ -58,6 +62,7 @@ function NotFound() {
         </div>
       </div>
     </main>
+    </div>
   )
 }
 
