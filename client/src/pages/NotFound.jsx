@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import './NotFound.css'
 
+
 function NotFound() {
   const location = useLocation()
   const navigate = useNavigate()

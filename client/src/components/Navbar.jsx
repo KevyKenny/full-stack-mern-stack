@@ -5,10 +5,13 @@ import { useAuth } from '../hooks/useAuth.js'
 import { getInitials } from '../utils/getInitials.js'
 import './Navbar.css'
 
+
 const GUEST_LINKS = [
   { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
   { to: '/signup', label: 'Sign up' },
   { to: '/login', label: 'Login' },
+  
 ]
 
 const EMPLOYEE_LINKS = [{ to: '/', label: 'Home' }]
