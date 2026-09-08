@@ -1,3 +1,4 @@
 export const API_BASE_URL = 'http://localhost:3000/api'
 
 export const AUTH_URL = `${API_BASE_URL}/auth`
+export const TASKS_URL = `${API_BASE_URL}/tasks`
