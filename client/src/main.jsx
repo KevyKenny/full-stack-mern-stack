@@ -19,16 +19,8 @@ createRoot(document.getElementById('root')).render(
         <Route
           path="/"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute employeeOnly>
               <App />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/tasks/:id/edit"
-          element={
-            <ProtectedRoute>
-              <EditTask />
             </ProtectedRoute>
           }
         />
@@ -37,6 +29,14 @@ createRoot(document.getElementById('root')).render(
           element={
             <ProtectedRoute adminOnly>
               <AdminHome />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tasks/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditTask />
             </ProtectedRoute>
           }
         />

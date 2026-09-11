@@ -57,7 +57,7 @@ export default function EditTask() {
     setError('')
     try {
       await axios.put(`${TASKS_URL}/${id}`, { title: nextTitle, done }, requestConfig)
-      navigate(user?.role === 'admin' ? '/admin/tasks' : '/')
+      navigate(user?.role === 'admin' ? '/home' : '/')
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to save this task.')
       setSaving(false)
@@ -109,7 +109,12 @@ export default function EditTask() {
               </fieldset>
 
               <div className="edit-task-actions">
-                <Link className="edit-task-cancel" to="/">Cancel</Link>
+                <Link
+                  className="edit-task-cancel"
+                  to={user?.role === 'admin' ? '/home' : '/'}
+                >
+                  Cancel
+                </Link>
                 <button type="submit" disabled={saving}>
                   {saving ? 'Saving...' : 'Save changes'}
                 </button>

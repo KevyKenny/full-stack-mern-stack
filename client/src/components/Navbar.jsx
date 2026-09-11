@@ -54,7 +54,11 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className={`nav-inner${isAdmin ? ' nav-inner-admin' : ''}`}>
-        <Link to="/home" className="brand" onClick={closeMenu}>
+        <Link
+          to={isAdmin ? '/home' : '/'}
+          className="brand"
+          onClick={closeMenu}
+        >
           Task Manager
         </Link>
 
