@@ -11,13 +11,14 @@ const GUEST_LINKS = [
   { to: '/about', label: 'About' },
   { to: '/signup', label: 'Sign up' },
   { to: '/login', label: 'Login' },
+
   
 ]
 
 const EMPLOYEE_LINKS = [{ to: '/', label: 'Home' }]
 
 const ADMIN_LINKS = [
-  { to: '/', label: 'Home' },
+  { to: '/home', label: 'Home' },
   { to: '/about', label: 'About' },
   { to: '/admin/tasks', label: 'Admin Tasks' },
   { to: '/admin/employees', label: 'Employees' },
@@ -53,7 +54,7 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className={`nav-inner${isAdmin ? ' nav-inner-admin' : ''}`}>
-        <Link to="/" className="brand" onClick={closeMenu}>
+        <Link to="/home" className="brand" onClick={closeMenu}>
           Task Manager
         </Link>
 
