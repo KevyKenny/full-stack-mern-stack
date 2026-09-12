@@ -43,6 +43,14 @@
   color: #222;
 }
 
+.home-alert {
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 .add-task {
   display: flex;
   gap: 12px;
@@ -78,10 +86,21 @@
   opacity: 0.9;
 }
 
+.add-btn:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .task-list {
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+.task-message {
+  color: #666;
+  text-align: center;
+  padding: 24px 0;
 }
 
 .task-card {
@@ -127,6 +146,10 @@
   font-size: 0.9rem;
 }
 
+.task-status.done {
+  color: #15803d;
+}
+
 .task-actions {
   display: flex;
   gap: 10px;
@@ -140,6 +163,7 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .delete-btn {
@@ -150,5 +174,34 @@
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  filter: brightness(0.96);
+}
+
+@media (max-width: 600px) {
+  .home-page {
+    padding: 12px;
+  }
+
+  .home-container {
+    padding: 24px 18px;
+  }
+
+  .task-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .task-info {
+    min-width: 0;
+  }
+
+  .task-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 

@@ -42,8 +42,20 @@ function Login() {
 
       saveAuth(res.data.token, res.data.user)
 
-      const destination =
-        redirectTo && redirectTo !== '/login' ? redirectTo : '/'
+      const isAdmin = res.data.user?.role === 'admin'
+      const homePath = isAdmin ? '/home' : '/'
+
+      let destination = homePath
+      if (redirectTo && redirectTo !== '/login') {
+        if (isAdmin && redirectTo === '/') {
+          destination = '/home'
+        } else if (!isAdmin && redirectTo === '/home') {
+          destination = '/'
+        } else {
+          destination = redirectTo
+        }
+      }
+
       navigate(destination, { replace: true, state: null })
     } catch (err) {
       const message =
