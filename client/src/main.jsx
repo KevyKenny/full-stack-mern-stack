@@ -11,6 +11,7 @@ import GuestRoute from './components/GuestRoute.jsx'
 import About from './pages/About.jsx'
 import EditTask from './pages/EditTask.jsx'
 import AdminHome from './pages/AdminHome.jsx'
+import AdminTasks from './pages/AdminTasks.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -37,6 +38,14 @@ createRoot(document.getElementById('root')).render(
           element={
             <ProtectedRoute>
               <EditTask />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/tasks"
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminTasks />
             </ProtectedRoute>
           }
         />
