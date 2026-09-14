@@ -12,6 +12,7 @@ import About from './pages/About.jsx'
 import EditTask from './pages/EditTask.jsx'
 import AdminHome from './pages/AdminHome.jsx'
 import AdminTasks from './pages/AdminTasks.jsx'
+import AdminEmployee from './pages/AdminEmployee.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -46,6 +47,14 @@ createRoot(document.getElementById('root')).render(
           element={
             <ProtectedRoute adminOnly>
               <AdminTasks />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/employees"
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminEmployee />
             </ProtectedRoute>
           }
         />
