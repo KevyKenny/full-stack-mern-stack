@@ -1,6 +1,6 @@
 import Home from './pages/Home.jsx'
 
-function App(){
+function App() {
   return <Home />
 }
 

@@ -2,10 +2,10 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth.js'
 
 function GuestRoute({ children }) {
-  const { isAuthenticated: authed } = useAuth()
+  const { isAuthenticated: authed, user } = useAuth()
 
   if (authed) {
-    return <Navigate to="/" replace />
+    return <Navigate to={user?.role === 'admin' ? '/home' : '/'} replace />
   }
 
   return children

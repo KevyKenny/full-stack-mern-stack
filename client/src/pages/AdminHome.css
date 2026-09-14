@@ -1,0 +1,51 @@
+.admin-home-container {
+  max-width: 900px;
+}
+
+.admin-profile-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-role-badge {
+  color: #764ba2;
+  background: rgba(118, 75, 162, 0.12);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-quick-links {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.admin-quick-links a {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+.admin-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-name {
+  color: #555;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .admin-profile-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
